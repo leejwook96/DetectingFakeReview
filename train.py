@@ -25,7 +25,7 @@ parser = spacy.load('en')
 
 def parse_csv(file):
     """
-    reads training data with labels and comment
+    reads csv file data with labels and comment
     """
     f = open(file, 'r')
     import csv
@@ -52,15 +52,9 @@ def parse_csv(file):
     return data, features, labels
 
 def KMeansModel(features):
-    # tok = metapy.analyzers.ICUTokenizer(suppress_tags=True)
-    # tok = metapy.analyzers.ListFilter(tok, "lemur-stopwords.txt", metapy.analyzers.ListFilter.Type.Reject)
-    # tok = metapy.analyzers.LowercaseFilter(tok)
-    # tok = metapy.analyzers.Porter2Filter(tok)
-    # ana = metapy.analyzers.NGramWordAnalyzer(1, tok)
-    # kmean = []
-    # for feature in features:
-    #     tok.set_content(feature)
-    #     kmean.append([token for token in tok])
+    """
+    Uses Clustering(KMeans) instead of Classification to filter out fraud reivews.
+    """
     vectorizer = TfidfVectorizer(stop_words='english')
     vectoriezed = vectorizer.fit_transform(features)
 
@@ -89,22 +83,22 @@ def KMeansModel(features):
 
 def SVCModel(data):
     """
+    Uses Multinomial Support Vector Machine to train fraud review detector
     """
+    #transformers using Spacy
     class predictors(TransformerMixin):
-        """
-        """
         def transform(self, X, **transform_params):
             return [self.clean_text(text) for text in X]
         def fit(self, X, y=None, **fit_params):
             return self
         def get_params(self, deep=True):
             return {}
+        # cleans the text
         def clean_text(self, text):
             return text.strip().lower()
 
+    #tokenizer to parse sentence, removing stopwords, removing punctuations and generate tokens using Spacy used for CountVectorizer()
     def spacy_tokenizer(sentence):
-        """
-        """
         tokens = parser(sentence)
         tokens = [tok.lemma_.lower().strip() if tok.lemma_ != "-PRON-" else tok.lower_ for tok in tokens]
         tokens = [tok for tok in tokens if (tok not in stopwords and tok not in punctuations)]
@@ -113,6 +107,8 @@ def SVCModel(data):
     vectorizer = CountVectorizer(tokenizer = spacy_tokenizer, ngram_range=(1,1))
 
     classifier = SVC(gamma='auto')
+
+    # apply predictors(), vectorizer (transforms) and final estimator(classifier)
     pipe = Pipeline([("cleaner", predictors()),
                      ('vectorizer', vectorizer),
                      ('classifier', classifier)])
@@ -120,17 +116,15 @@ def SVCModel(data):
     # Load sample data
     pipe.fit([x[0] for x in data], [x[1] for x in data])
 
-    # test = [('this game is so fking bad', '-')]
-    # pred_data = pipe.predict([x[0] for x in test])
-
-    # print ("Linear LVC Accuracy:", accuracy_score([x[1] for x in test], pred_data))
     return pipe
 
 def MultinomialNBModel(data):
     """
+    Uses Multinomial Naive Bayes Classifer to train fraud review detector
     """
     tfidf = TfidfVectorizer(sublinear_tf=True, min_df=5, norm='l2', ngram_range=(1, 2), stop_words='english')
 
+    # apply CountVectorizer(), TfidfTransformer(), (transforms) and final estimator(classifier)
     pipe = Pipeline([('vect', CountVectorizer()),
                     ('tfidf', TfidfTransformer()),
                     ('classifier', MultinomialNB())])
@@ -149,8 +143,11 @@ def MultinomialNBModel(data):
 
 def SGDModel(data):
     """
+    Uses Multinomial Stochastic Gradient Descent to train fraud review detector
     """
     classifier = SGDClassifier(loss='hinge', penalty='l2', alpha=1e-3, random_state=42, max_iter=50, tol=1e-3)
+
+    # apply CountVectorizer(), TfidfTransformer(), (transforms) and final estimator(classifier)
     pipe = Pipeline([('vect', CountVectorizer()),
                     ('tfidf', TfidfTransformer()),
                     ('classifier', classifier)])

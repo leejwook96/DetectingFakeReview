@@ -8,6 +8,7 @@ from sklearn.metrics import accuracy_score
 
 def runSVC(tests):
     """
+    Wrapper function that uses training Support Vector Machine model to classify tests data
     """
     data, features, labels = parse_csv('training.csv')
     pipe = SVCModel(data)
@@ -18,6 +19,7 @@ def runSVC(tests):
 
 def runMNB(tests):
     """
+    Wrapper function that uses training Multinomial Naive Bayes model to classify tests data
     """
     data, features, labels = parse_csv('training.csv')
     pipe = MultinomialNBModel(data)
@@ -28,6 +30,7 @@ def runMNB(tests):
 
 def runSGD(tests):
     """
+    Wrapper function that uses training Stochastic Gradient Descent model to classify tests data
     """
     data, features, labels = parse_csv('training.csv')
     pipe = SGDModel(data)
@@ -49,6 +52,8 @@ def main():
     social_MNB_pred = runMNB(data)
     total.append(analyze(social_MNB_pred, labels))
 
+    # each element in total looks like:
+    # [tn, fp, fn, tp, precision, recall, acc, fscore]
     bargraph([i[0] for i in total], [i[1] for i in total], [i[2] for i in total], [i[3] for i in total], [i[4] for i in total], [i[5] for i in total], [i[6] for i in total], [i[7] for i in total])
 
 
@@ -63,6 +68,8 @@ def main():
 
     game_MNB_pred = runMNB(data)
     total.append(analyze(game_MNB_pred, labels))
+
+    # [tn, fp, fn, tp, precision, recall, acc, fscore]
     bargraph([i[0] for i in total], [i[1] for i in total], [i[2] for i in total], [i[3] for i in total], [i[4] for i in total], [i[5] for i in total], [i[6] for i in total], [i[7] for i in total])
 
     total = []
@@ -76,6 +83,8 @@ def main():
 
     education_MNB_pred = runMNB(data)
     total.append(analyze(education_MNB_pred, labels))
+
+    # [tn, fp, fn, tp, precision, recall, acc, fscore]
     bargraph([i[0] for i in total], [i[1] for i in total], [i[2] for i in total], [i[3] for i in total], [i[4] for i in total], [i[5] for i in total], [i[6] for i in total], [i[7] for i in total])
 
 main()

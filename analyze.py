@@ -3,6 +3,9 @@ import sklearn.metrics as metrics
 import numpy as np
 
 def analyze(pred_data, label):
+    """
+    Given the predicted label and the real label, it computes TN, FP, FN, TP, precision, recall, fscore, and accuracy
+    """
     tn = 0
     fp = 0
     fn = 0
@@ -51,6 +54,9 @@ def analyze(pred_data, label):
 
 
 def bargraph(tn, fp, fn, tp, precision, recall, acc, fscore):
+    """
+    Compares SGD, SVC, Naive Bayes methods by ploting out the True Positive %, False Positive %, False Negative %, True Positive %, Precision %, Recall %, Accuracy %, and Fscore %
+    """
     n_groups = 3
 
     fig, ax = plt.subplots()

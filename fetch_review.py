@@ -6,6 +6,9 @@ import csv
 import app_name_dict
 
 def getAllReviews(appID, f, page):
+    """
+    Recursive method that gets the json file of the reviews of the app with given appID for all the pages and write into the .csv file f to later be used to get the data in other methods
+    """
     url = 'https://itunes.apple.com/rss/customerreviews/id={}/page={}/sortby=mostrecent/json'.format(appID, page)
 
     #assume correct appID given
@@ -53,8 +56,8 @@ for category_name, category_dict in app_name_dict.name_to_dict.items():
     print("=============================")
     for app_id, app_name in category_dict.items():
         page = 1
-        # order of csv file with delimite = ','
-        # author,comment,sentiment,rating,review_id,title,author_url,version,vote_count
+        #order of csv file with delimite = ','
+        #author,comment,sentiment,rating,review_id,title,author_url,version,vote_count
 
         print("=======Retrieving reviews for...{}=======".format(app_name))
         #write all the reviews found into csv file
