@@ -122,7 +122,7 @@ def MultinomialNBModel(data):
     """
     Uses Multinomial Naive Bayes Classifer to train fraud review detector
     """
-    tfidf = TfidfVectorizer(sublinear_tf=True, min_df=5, norm='l2', ngram_range=(1, 2), stop_words='english')
+    tfidf = TfidfVectorizer(sublinear_tf=True, min_df=5, norm='l2', ngram_range=(1, 1), stop_words='english')
 
     # apply CountVectorizer(), TfidfTransformer(), (transforms) and final estimator(classifier)
     pipe = Pipeline([('vect', CountVectorizer()),
