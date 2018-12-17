@@ -39,52 +39,33 @@ def runSGD(tests):
     print ("SGD Accuracy:", accuracy_score([x[1] for x in tests], pred_data))
     return pred_data
 
-def main():
+def test(filename, graph):
     total = []
-    data, features, labels = parse_csv('social.csv')
-    print("Analysis for social apps")
-    social_SGD_pred = runSGD(data)
-    total.append(analyze(social_SGD_pred, labels))
+    data, features, labels = parse_csv(filename)
 
-    social_SVC_pred = runSVC(data)
-    total.append(analyze(social_SVC_pred, labels))
+    SGD_pred = runSGD(data)
+    total.append(analyze(SGD_pred, labels))
 
-    social_MNB_pred = runMNB(data)
-    total.append(analyze(social_MNB_pred, labels))
+    SVC_pred = runSVC(data)
+    total.append(analyze(SVC_pred, labels))
+
+    MNB_pred = runMNB(data)
+    total.append(analyze(MNB_pred, labels))
 
     # each element in total looks like:
     # [tn, fp, fn, tp, precision, recall, acc, fscore]
-    bargraph([i[0] for i in total], [i[1] for i in total], [i[2] for i in total], [i[3] for i in total], [i[4] for i in total], [i[5] for i in total], [i[6] for i in total], [i[7] for i in total])
+    if (graph):
+        bargraph([i[0] for i in total], [i[1] for i in total], [i[2] for i in total], [i[3] for i in total], [i[4] for i in total], [i[5] for i in total], [i[6] for i in total], [i[7] for i in total])
 
+def main():
+    print("Analysis for social apps")
+    test('social.csv', graph=False)
 
-    total = []
-    data, features, labels = parse_csv('game.csv')
     print("Analysis for game apps")
-    game_SGD_pred = runSGD(data)
-    total.append(analyze(game_SGD_pred, labels))
+    test('game.csv', graph=False)
 
-    game_SVC_pred = runSVC(data)
-    total.append(analyze(game_SVC_pred, labels))
+    print("Analysis for educatoin apps")
+    test('education.csv', graph=False)
 
-    game_MNB_pred = runMNB(data)
-    total.append(analyze(game_MNB_pred, labels))
-
-    # [tn, fp, fn, tp, precision, recall, acc, fscore]
-    bargraph([i[0] for i in total], [i[1] for i in total], [i[2] for i in total], [i[3] for i in total], [i[4] for i in total], [i[5] for i in total], [i[6] for i in total], [i[7] for i in total])
-
-    total = []
-    data, features, labels = parse_csv('education.csv')
-    print("Analysis for education apps")
-    education_SGD_pred = runSGD(data)
-    total.append(analyze(education_SGD_pred, labels))
-
-    education_SVC_pred = runSVC(data)
-    total.append(analyze(education_SVC_pred, labels))
-
-    education_MNB_pred = runMNB(data)
-    total.append(analyze(education_MNB_pred, labels))
-
-    # [tn, fp, fn, tp, precision, recall, acc, fscore]
-    bargraph([i[0] for i in total], [i[1] for i in total], [i[2] for i in total], [i[3] for i in total], [i[4] for i in total], [i[5] for i in total], [i[6] for i in total], [i[7] for i in total])
-
-main()
+if __name__ == '__main__':
+    main()
